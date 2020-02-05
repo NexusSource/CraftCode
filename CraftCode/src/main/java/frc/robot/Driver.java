@@ -5,16 +5,22 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Driver {
     public Controller controlType = Controller.Xbox;
-
+    public boolean tankMode = false;
     public void Control(DifferentialDrive drive, Joystick joystick, Joystick xbox) {
         if (controlType == Controller.Xbox) {
             //XBOX IS DRIVING
+            
+            if (xbox.getRawButtonPressed(4) == true)
+                tankMode = !tankMode;
 
             double activate = xbox.getRawAxis(3);
             double fSpeed = xbox.getRawAxis(1);
             double rSpeed = xbox.getRawAxis(0);
             if (activate > .1) {
-                drive.arcadeDrive(fSpeed * activate, rSpeed * activate, true);
+                if (!tankMode)
+                    drive.arcadeDrive(fSpeed * activate, rSpeed * activate, true);
+                else
+                    drive.tankDrive(xbox.getRawAxis(5), fSpeed);
             }
             else
                 UpdateState(joystick);
